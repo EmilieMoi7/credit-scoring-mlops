@@ -11,6 +11,7 @@ Le notebook principal contient :
 
 ## Structure du projet
 
+```bash
 ├── data/
 │ └── raw/ # Données brutes (non versionnées)
 ├── notebooks/
@@ -18,7 +19,7 @@ Le notebook principal contient :
 ├── mlruns/ # Tracking MLflow (ignoré par Git)
 ├── .gitignore
 └── README.md
-
+```
 
 ## Données
 
