@@ -34,28 +34,37 @@ exceptiongroup @ file:///home/conda/feedstock_root/build_artifacts/exceptiongrou
 executing==2.2.1
 fastapi==0.133.0
 fastapi-cli @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_fastapi-cli_1771293215/work
+filelock==3.29.0
 Flask @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_flask_1771489274/work
 flask-cors @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_flask-cors_1765657357/work
 fonttools @ file:///Users/runner/miniforge3/conda-bld/fonttools_1765632680641/work
 frozenlist @ file:///Users/runner/miniforge3/conda-bld/frozenlist_1752167220956/work
+fsspec==2026.3.0
 gitdb @ file:///home/conda/feedstock_root/build_artifacts/gitdb_1735887193964/work
 GitPython @ file:///home/conda/feedstock_root/build_artifacts/gitpython_1767358723114/work
 google-auth @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_google-auth_1769604366/work
+gradio==6.13.0
+gradio_client==2.5.0
 graphene @ file:///home/conda/feedstock_root/build_artifacts/graphene_1734272316656/work
 graphql-core @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_graphql-core_1762090452/work
 graphql-relay @ file:///home/conda/feedstock_root/build_artifacts/graphql-relay_1734272429466/work
 greenlet @ file:///Users/runner/miniforge3/conda-bld/bld/rattler-build_greenlet_1771658499/work
+groovy==0.1.2
 gunicorn @ file:///Users/runner/miniforge3/conda-bld/gunicorn_1762506520675/work
 h11 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h11_1767729720/work
 h2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h2_1756364871/work
+hf-gradio==0.4.1
+hf-xet==1.4.3
 hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1737618293087/work
 httpcore @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_httpcore_1745602916/work
 httptools @ file:///Users/runner/miniforge3/conda-bld/httptools_1762504070708/work
 httpx @ file:///home/conda/feedstock_root/build_artifacts/httpx_1733663348460/work
 huey @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_huey_1767705981/work
+huggingface_hub==1.11.0
 hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
 idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1760286409563/work
 importlib_metadata==8.7.1
+iniconfig==2.3.0
 invoke @ file:///home/conda/feedstock_root/build_artifacts/invoke_1760146001278/work
 ipykernel==7.2.0
 ipython==9.10.0
@@ -85,6 +94,7 @@ opentelemetry-proto @ file:///home/conda/feedstock_root/build_artifacts/opentele
 opentelemetry-sdk @ file:///home/conda/feedstock_root/build_artifacts/opentelemetry-sdk_1765599008764/work
 opentelemetry-semantic-conventions @ file:///home/conda/feedstock_root/build_artifacts/opentelemetry-semantic-conventions_1765560547655/work
 optuna==4.7.0
+orjson==3.11.8
 packaging @ file:///opt/miniconda3/conda-bld/packaging_1761049079066/work
 pandas @ file:///Users/runner/miniforge3/conda-bld/pandas_1764614611550/work
 paramiko @ file:///home/conda/feedstock_root/build_artifacts/paramiko_1755102058754/work
@@ -92,6 +102,7 @@ parso==0.8.6
 pexpect==4.9.0
 pillow==12.1.1
 platformdirs==4.9.2
+pluggy==1.6.0
 prettytable @ file:///home/conda/feedstock_root/build_artifacts/prettytable_1763199261301/work
 prometheus_client @ file:///home/conda/feedstock_root/build_artifacts/prometheus_client_1768476496023/work
 prometheus_flask_exporter @ file:///home/conda/feedstock_root/build_artifacts/prometheus_flask_exporter_1741758851275/work
@@ -109,11 +120,13 @@ pydantic @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_p
 pydantic-extra-types @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pydantic-extra-types_1770023146/work
 pydantic-settings @ file:///home/conda/feedstock_root/build_artifacts/pydantic-settings_1771527200044/work
 pydantic_core @ file:///Users/runner/miniforge3/conda-bld/bld/rattler-build_pydantic-core_1762989051/work
+pydub==0.25.1
 Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1750615794071/work
 PyNaCl @ file:///Users/runner/miniforge3/conda-bld/pynacl_1772171180660/work
 pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1760304524008/work
 pyparsing @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pyparsing_1769003998/work
 PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1733217236728/work
+pytest==9.0.3
 python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-dateutil_1751104122/work
 python-dotenv @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-dotenv_1761503229/work
 python-multipart @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-multipart_1769356329/work
@@ -126,9 +139,11 @@ requests @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_r
 rich @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_rich_1771572730/work/dist
 rich-toolkit @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_rich-toolkit_1771977622/work
 rsa @ file:///home/conda/feedstock_root/build_artifacts/rsa_1744825426113/work
+safehttpx==0.1.7
 scikit-learn @ file:///Users/ec2-user/croot/scikit-learn_1766097961875/work
 scipy==1.17.1
 seaborn==0.13.2
+semantic-version==2.10.0
 shellingham @ file:///home/conda/feedstock_root/build_artifacts/shellingham_1762858192781/work
 six @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_six_1753199211/work
 skops @ file:///home/conda/feedstock_root/build_artifacts/skops_1754500195302/work
@@ -141,6 +156,7 @@ stack-data==0.6.3
 starlette @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_starlette_1768919444/work
 threadpoolctl @ file:///home/conda/feedstock_root/build_artifacts/threadpoolctl_1741878222898/work
 tomli @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_tomli_1768146676/work
+tomlkit==0.14.0
 tornado==6.5.4
 tqdm==4.67.3
 traitlets==5.14.3
