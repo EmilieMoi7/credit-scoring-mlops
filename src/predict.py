@@ -8,6 +8,34 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "credit_scoring_pipeline.joblib")
 DATA_DIR = os.path.join(BASE_DIR, "data", "raw")
 
+DATASET_BASE_URL = "https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main"
+
+REQUIRED_FILES = [
+    "application_test.csv",
+    "bureau.csv",
+    "bureau_balance.csv",
+    "previous_application.csv",
+    "installments_payments.csv",
+    "POS_CASH_balance.csv",
+    "credit_card_balance.csv",
+]
+
+
+def download_data_if_missing():
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    for filename in REQUIRED_FILES:
+        file_path = os.path.join(DATA_DIR, filename)
+
+        if not os.path.exists(file_path):
+            url = f"{DATASET_BASE_URL}/{filename}"
+            print(f"Téléchargement de {filename}...")
+            df = pd.read_csv(url)
+            df.to_csv(file_path, index=False)
+
+
+download_data_if_missing()
+
 model = joblib.load(MODEL_PATH)
 
 application = pd.read_csv(os.path.join(DATA_DIR, "application_test.csv"))
