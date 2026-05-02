@@ -1,0 +1,69 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download raw data
+        run: |
+          mkdir -p data/raw
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/application_test.csv -O data/raw/application_test.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/application_train.csv -O data/raw/application_train.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/bureau.csv -O data/raw/bureau.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/bureau_balance.csv -O data/raw/bureau_balance.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/previous_application.csv -O data/raw/previous_application.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/installments_payments.csv -O data/raw/installments_payments.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/POS_CASH_balance.csv -O data/raw/POS_CASH_balance.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/credit_card_balance.csv -O data/raw/credit_card_balance.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/HomeCredit_columns_description.csv -O data/raw/HomeCredit_columns_description.csv
+          wget https://huggingface.co/datasets/Emilie7/credit-scoring-data/resolve/main/sample_submission.csv -O data/raw/sample_submission.csv
+
+      - name: Run tests
+        run: |
+          PYTHONPATH=. pytest
+
+      - name: Build Docker image
+        run: |
+          docker build -t credit-scoring-app .
+
+      - name: Build Docker image
+        run: |
+          docker build -t credit-scoring-app .
+
+      - name: Deploy to Hugging Face Space
+        run: |
+          pip install huggingface_hub
+          git config --global user.email "you@example.com"
+          git config --global user.name "github-actions"
+
+          git clone https://huggingface.co/spaces/Emilie7/credit-scoring-app space_repo
+          cp -r app.py requirements.txt src models space_repo/
+
+          cd space_repo
+          git add .
+          git commit -m "Update Space from CI" || echo "No changes to commit"
+          git push https://Emilie7:${HF_TOKEN}@huggingface.co/spaces/Emilie7/credit-scoring-app main
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
