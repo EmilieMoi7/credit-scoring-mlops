@@ -47,3 +47,23 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t credit-scoring-app .
+
+      - name: Build Docker image
+        run: |
+          docker build -t credit-scoring-app .
+
+      - name: Deploy to Hugging Face Space
+        run: |
+          pip install huggingface_hub
+          git config --global user.email "you@example.com"
+          git config --global user.name "github-actions"
+
+          git clone https://huggingface.co/spaces/Emilie7/credit-scoring-app space_repo
+          cp -r app.py requirements.txt src models space_repo/
+
+          cd space_repo
+          git add .
+          git commit -m "Update Space from CI" || echo "No changes to commit"
+          git push https://Emilie7:${HF_TOKEN}@huggingface.co/spaces/Emilie7/credit-scoring-app main
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
