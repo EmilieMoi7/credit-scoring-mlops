@@ -1,5 +1,26 @@
 import gradio as gr
+import json
+import time
+import os
+
+from datetime import datetime
 from src.predict import predict_credit_score
+
+
+def log_prediction(data, prediction, latency, status="success", error=None):
+    os.makedirs("logs", exist_ok=True)
+
+    log_entry = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "input": data,
+        "prediction": prediction,
+        "latency": latency,
+        "status": status,
+        "error": error
+    }
+
+    with open("logs/production_logs.jsonl", "a") as f:
+        f.write(json.dumps(log_entry) + "\n")
 
 
 def predict_interface(
@@ -11,30 +32,32 @@ def predict_interface(
     flag_own_car,
     flag_own_realty
 ):
+    start_time = time.time()
+
     try:
         # Validations métier
         if age <= 0 or age > 100:
-            return "Erreur : l'âge doit être compris entre 1 et 100 ans."
+            raise ValueError("L'âge doit être compris entre 1 et 100 ans.")
 
         if amt_income_total <= 0:
-            return "Erreur : le revenu total doit être positif."
+            raise ValueError("Le revenu total doit être positif.")
 
         if amt_credit <= 0:
-            return "Erreur : le montant du crédit doit être positif."
+            raise ValueError("Le montant du crédit doit être positif.")
 
         if loan_duration <= 0 or loan_duration > 40:
-            return "Erreur : la durée du prêt doit être comprise entre 1 et 40 ans."
+            raise ValueError("La durée du prêt doit être comprise entre 1 et 40 ans.")
 
         if cnt_children < 0:
-            return "Erreur : le nombre d'enfants ne peut pas être négatif."
+            raise ValueError("Le nombre d'enfants ne peut pas être négatif.")
 
         if flag_own_car not in [0, 1]:
-            return "Erreur : voiture doit valoir 0 ou 1."
+            raise ValueError("Voiture doit valoir 0 ou 1.")
 
         if flag_own_realty not in [0, 1]:
-            return "Erreur : bien immobilier doit valoir 0 ou 1."
+            raise ValueError("Bien immobilier doit valoir 0 ou 1.")
 
-        # Conversion métier vers colonnes attendues
+        # Conversion métier
         days_birth = -int(age * 365)
         amt_annuity = amt_credit / loan_duration
 
@@ -48,14 +71,20 @@ def predict_interface(
             "FLAG_OWN_REALTY": int(flag_own_realty),
         }
 
+        # Prédiction
         result = predict_credit_score(data)
 
+        latency = time.time() - start_time
+        log_prediction(data, result, latency)
+
         if result == 0:
-            return "✔ Crédit accordé (risque faible)"
+            return "Crédit accordé (risque faible)"
         else:
-            return "❌ Crédit refusé (risque élevé)"
+            return "Crédit refusé (risque élevé)"
 
     except Exception as e:
+        latency = time.time() - start_time
+        log_prediction({}, None, latency, status="error", error=str(e))
         return f"Erreur : {str(e)}"
 
 

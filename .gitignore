@@ -12,3 +12,6 @@ notebooks/mlruns/
 
 data/raw/*.csv
 !data/raw/.gitkeep
+
+logs/*
+!logs/.gitkeep
