@@ -176,3 +176,5 @@ wrapt
 xgboost 
 yarl 
 zipp 
+streamlit
+evidently
