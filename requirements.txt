@@ -178,3 +178,4 @@ yarl
 zipp 
 streamlit
 evidently
+psutil
