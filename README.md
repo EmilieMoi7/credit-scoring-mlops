@@ -22,7 +22,8 @@ Ce projet met en place un pipeline de credit scoring avec une approche MLOps com
 
 ```bash
 ├── data/
-│   └── raw/                # Données récupérées depuis Hugging Face
+│   ├── raw/                # Données récupérées depuis Hugging Face
+│   └── processed/          # Features pré-calculées
 ├── notebooks/
 │   └── 01_credit_scoring_pipeline.ipynb
 ├── src/
@@ -33,10 +34,18 @@ Ce projet met en place un pipeline de credit scoring avec une approche MLOps com
 ├── models/
 │   └── credit_scoring_pipeline.joblib
 ├── app.py                  # Interface Gradio
+├── dashboard.py            # Dashboard Streamlit de monitoring
 ├── requirements.txt
 ├── Dockerfile
 ├── .github/workflows/
 │   └── ci-cd.yml
+├── benchmarks/
+│   ├── benchmark_baseline.py
+│   └── benchmark_optimized.py
+├── reports/
+│   ├── baseline_metrics.json
+│   ├── optimized_metrics_v1.json
+│   └── optimisation_report.md
 └── README.md
 ```
 
@@ -86,6 +95,26 @@ pip install -r requirements.txt
 python app.py
 ```
 
+## Lancer les tests
+
+```bash
+PYTHONPATH=. pytest
+```
+
+## Benchmarks de performance
+
+Benchmark baseline :
+
+```bash
+python benchmarks/benchmark_baseline.py
+```
+
+Benchmark optimisé :
+
+```bash
+python benchmarks/benchmark_optimized.py
+```
+
 ## Technologies utilisées 
 
 - Python
@@ -96,4 +125,45 @@ python app.py
 - Gradio
 - Docker
 - GitHub Actions
+- PyArrow
+
+## Monitoring et optimisation
+
+Le projet inclut un système de monitoring permettant de collecter :
+- les temps d'inférence ;
+- l'utilisation CPU ;
+- l'utilisation mémoire ;
+- les inputs / outputs des prédictions ;
+- les erreurs d'exécution.
+
+Les données sont stockées dans des logs JSON et visualisées avec un dashboard Streamlit.
+
+Lancer le dashboard :
+
+```bash
+streamlit run dashboard.py
+```
+
+Une phase d'analyse de performance a été réalisée avec :
+- benchmark de baseline ;
+- profiling avec cProfile ;
+- optimisation du preprocessing.
+
+L'optimisation par cache de features pré-calculées a permis de réduire la latence moyenne :
+- de ~3 sec à ~0.006 sec ;
+- et d'augmenter fortement le throughput.
+
+Le profiling a montré que le principal bottleneck provenait du recalcul des features avec `build_features()` à chaque requête.
+
+Une optimisation basée sur un cache de features pré-calculées (`features_cache.parquet`) a ensuite été mise en place.
+
+## Résultats de l'optimisation
+
+| Métrique | Baseline | Optimized v1 |
+|---|---|---|
+| Mean latency | 3.01 sec | 0.006 sec |
+| Throughput | 0.33 req/sec | 159 req/sec |
+| Memory usage | 2106 MB | 357 MB |
+| Error rate | 0 % | 0 % |
+
 
