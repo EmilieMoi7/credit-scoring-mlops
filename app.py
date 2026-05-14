@@ -2,12 +2,27 @@ import gradio as gr
 import json
 import time
 import os
+import psutil
 
 from datetime import datetime
 from src.predict import predict_credit_score
 
 
-def log_prediction(data, prediction, latency, status="success", error=None):
+def get_memory_mb():
+    process = psutil.Process(os.getpid())
+    return process.memory_info().rss / 1024 / 1024
+
+
+def log_prediction(
+    data,
+    prediction,
+    latency,
+    inference_time,
+    cpu_percent,
+    memory_mb,
+    status="success",
+    error=None
+):
     os.makedirs("logs", exist_ok=True)
 
     log_entry = {
@@ -15,6 +30,9 @@ def log_prediction(data, prediction, latency, status="success", error=None):
         "input": data,
         "prediction": prediction,
         "latency": latency,
+        "inference_time": inference_time,
+        "cpu_percent": cpu_percent,
+        "memory_mb": memory_mb,
         "status": status,
         "error": error
     }
@@ -33,6 +51,7 @@ def predict_interface(
     flag_own_realty
 ):
     start_time = time.time()
+    inference_time = None
 
     try:
         # Validations métier
@@ -71,11 +90,24 @@ def predict_interface(
             "FLAG_OWN_REALTY": int(flag_own_realty),
         }
 
-        # Prédiction
+        # Mesure spécifique de l'inférence
+        inference_start = time.time()
         result = predict_credit_score(data)
+        inference_time = time.time() - inference_start
 
         latency = time.time() - start_time
-        log_prediction(data, result, latency)
+        cpu_percent = psutil.cpu_percent(interval=None)
+        memory_mb = get_memory_mb()
+
+        log_prediction(
+            data=data,
+            prediction=result,
+            latency=latency,
+            inference_time=inference_time,
+            cpu_percent=cpu_percent,
+            memory_mb=memory_mb,
+            status="success"
+        )
 
         if result == 0:
             return "Crédit accordé (risque faible)"
@@ -84,7 +116,20 @@ def predict_interface(
 
     except Exception as e:
         latency = time.time() - start_time
-        log_prediction({}, None, latency, status="error", error=str(e))
+        cpu_percent = psutil.cpu_percent(interval=None)
+        memory_mb = get_memory_mb()
+
+        log_prediction(
+            data={},
+            prediction=None,
+            latency=latency,
+            inference_time=inference_time,
+            cpu_percent=cpu_percent,
+            memory_mb=memory_mb,
+            status="error",
+            error=str(e)
+        )
+
         return f"Erreur : {str(e)}"
 
 

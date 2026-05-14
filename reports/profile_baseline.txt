@@ -1,0 +1,38 @@
+         784615 function calls (770815 primitive calls) in 15.504 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1331 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000   15.505   15.505 /Users/emiliemoissette/Desktop/02_Formation AI-Engineer/06_Initiez vous au MLOps/Projet6_MLOps/benchmarks/profile_baseline.py:23(run_profile)
+        5    0.000    0.000   15.505    3.101 /Users/emiliemoissette/Desktop/02_Formation AI-Engineer/06_Initiez vous au MLOps/Projet6_MLOps/src/predict.py:106(predict_credit_score)
+        5    0.014    0.003   15.438    3.088 /Users/emiliemoissette/Desktop/02_Formation AI-Engineer/06_Initiez vous au MLOps/Projet6_MLOps/src/predict.py:70(prepare_input)
+        5    0.173    0.035   14.836    2.967 /Users/emiliemoissette/Desktop/02_Formation AI-Engineer/06_Initiez vous au MLOps/Projet6_MLOps/src/features.py:75(build_features)
+       30    0.017    0.001    9.819    0.327 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/generic.py:1420(aggregate)
+       30    0.001    0.000    9.685    0.323 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/apply.py:172(agg)
+       30    0.010    0.000    9.684    0.323 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/apply.py:415(agg_dict_like)
+       30    0.000    0.000    9.675    0.322 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/apply.py:1570(agg_or_apply_dict_like)
+       30    0.000    0.000    9.596    0.320 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/apply.py:425(compute_dict_like)
+       30    0.000    0.000    9.590    0.320 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/apply.py:496(<listcomp>)
+  270/115    0.022    0.000    9.586    0.083 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/generic.py:232(aggregate)
+      115    0.002    0.000    9.572    0.083 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/generic.py:331(_aggregate_multiple_funcs)
+      155    0.011    0.000    7.145    0.046 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/internals/base.py:365(grouped_reduce)
+      115    0.000    0.000    6.466    0.056 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/groupby.py:1964(_cython_agg_general)
+      115    0.000    0.000    6.458    0.056 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/groupby.py:1978(array_func)
+      115    0.001    0.000    6.458    0.056 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/ops.py:821(_cython_operation)
+        5    0.080    0.016    6.390    1.278 /Users/emiliemoissette/Desktop/02_Formation AI-Engineer/06_Initiez vous au MLOps/Projet6_MLOps/src/features.py:32(aggregate_installments)
+      115    0.000    0.000    4.825    0.042 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/ops.py:532(cython_operation)
+      115    0.041    0.000    4.824    0.042 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/ops.py:311(_cython_op_ndim_compat)
+      115    4.027    0.035    4.783    0.042 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/ops.py:358(_call_cython_op)
+        5    0.020    0.004    4.580    0.916 /Users/emiliemoissette/Desktop/02_Formation AI-Engineer/06_Initiez vous au MLOps/Projet6_MLOps/src/features.py:13(aggregate_bureau)
+  200/175    0.065    0.000    3.725    0.021 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/algorithms.py:610(factorize)
+       30    0.000    0.000    3.725    0.124 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/ops.py:752(group_info)
+       30    0.000    0.000    3.725    0.124 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/ops.py:767(_get_compressed_codes)
+       30    0.000    0.000    3.715    0.124 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/grouper.py:689(codes)
+       30    0.000    0.000    3.714    0.124 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/grouper.py:777(_codes_and_uniques)
+       45    0.000    0.000    3.416    0.076 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/groupby.py:1898(_agg_general)
+       70    0.000    0.000    3.051    0.044 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/groupby.py:2372(mean)
+       40    0.132    0.003    3.045    0.076 /opt/anaconda3/envs/credit_scoring64/lib/python3.11/site-packages/pandas/core/groupby/groupby.py:2271(count)
+     1375    2.964    0.002    2.964    0.002 {method 'copy' of 'numpy.ndarray' objects}
+
+
