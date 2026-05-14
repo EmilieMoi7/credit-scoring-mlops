@@ -1,0 +1,12 @@
+{
+    "version": "baseline",
+    "n_requests": 50,
+    "mean_latency_sec": 0.006251521110534668,
+    "min_latency_sec": 0.005641937255859375,
+    "max_latency_sec": 0.024116039276123047,
+    "p95_latency_sec": 0.006043374538421631,
+    "throughput_req_per_sec": 159.0821994080174,
+    "cpu_avg_percent": 2.468,
+    "memory_avg_mb": 357.195,
+    "error_rate_percent": 0.0
+}

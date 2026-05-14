@@ -1,12 +1,12 @@
 {
     "version": "baseline",
     "n_requests": 50,
-    "mean_latency_sec": 3.011308636665344,
-    "min_latency_sec": 2.651106119155884,
-    "max_latency_sec": 3.662292242050171,
-    "p95_latency_sec": 3.3127208471298215,
-    "throughput_req_per_sec": 0.33205461723630597,
-    "cpu_avg_percent": 24.493999999999996,
-    "memory_avg_mb": 2106.8728125,
+    "mean_latency_sec": 0.00629643440246582,
+    "min_latency_sec": 0.005590915679931641,
+    "max_latency_sec": 0.024574995040893555,
+    "p95_latency_sec": 0.0068451046943664535,
+    "throughput_req_per_sec": 157.96874599833984,
+    "cpu_avg_percent": 2.346,
+    "memory_avg_mb": 351.123125,
     "error_rate_percent": 0.0
 }
