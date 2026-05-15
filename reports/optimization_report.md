@@ -71,6 +71,23 @@ Cette approche permet de séparer :
 
 ---
 
+## Justification de la configuration finale
+
+Le modèle final conserve une architecture Scikit-learn chargée avec Joblib afin de garantir :
+- une compatibilité simple avec l'environnement de déploiement ;
+- une intégration stable dans l'API Gradio ;
+- une maintenance légère.
+
+Les features sont pré-calculées puis stockées au format parquet avec PyArrow afin de réduire le coût du preprocessing pendant l'inférence.
+
+Le profiling avec cProfile a montré que le principal bottleneck provenait des agrégations pandas réalisées dans `build_features()` et non de l'inférence du modèle lui-même.
+
+L'utilisation d'ONNX Runtime a été envisagée mais n'a pas été retenue dans la configuration finale, car l'optimisation du preprocessing apportait un gain beaucoup plus significatif dans notre cas d'usage.
+
+Le projet est exécuté sur CPU, ce qui reste suffisant pour ce modèle tabulaire après optimisation des features.
+
+---
+
 ## Conclusion
 
 L'utilisation d'un cache de features pré-calculées a permis de réduire fortement la latence d'inférence et d'améliorer significativement le throughput du système.

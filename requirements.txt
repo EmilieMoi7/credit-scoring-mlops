@@ -179,3 +179,4 @@ zipp
 streamlit
 evidently
 psutil
+pytest-cov

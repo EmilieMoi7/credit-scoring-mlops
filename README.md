@@ -101,6 +101,16 @@ python app.py
 PYTHONPATH=. pytest
 ```
 
+## Analyse de couverture des tests
+
+Le coverage des tests peut être exécuté avec :
+
+```bash
+PYTHONPATH=. pytest --cov=src
+```
+
+Les tests couvrent principalement le pipeline d'inférence et les cas critiques de prédiction dans `predict.py`.
+
 ## Benchmarks de performance
 
 Benchmark baseline :

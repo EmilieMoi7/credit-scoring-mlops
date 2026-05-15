@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
+import numpy as np
 from pathlib import Path
 
 st.set_page_config(page_title="Monitoring Crédit Scoring", layout="wide")
@@ -132,6 +133,33 @@ with perf_graph_col2:
         st.pyplot(fig, use_container_width=False)
 
 # =========================
+# PSI FUNCTIONS
+# =========================
+
+def calculate_psi(expected, actual, bins=10):
+    expected = np.array(expected)
+    actual = np.array(actual)
+
+    breakpoints = np.linspace(0, 100, bins + 1)
+    breakpoints = np.percentile(expected, breakpoints)
+
+    expected_counts = np.histogram(expected, bins=breakpoints)[0]
+    actual_counts = np.histogram(actual, bins=breakpoints)[0]
+
+    expected_percents = expected_counts / len(expected)
+    actual_percents = actual_counts / len(actual)
+
+    expected_percents = np.where(expected_percents == 0, 0.0001, expected_percents)
+    actual_percents = np.where(actual_percents == 0, 0.0001, actual_percents)
+
+    psi = np.sum(
+        (expected_percents - actual_percents)
+        * np.log(expected_percents / actual_percents)
+    )
+
+    return psi
+
+# =========================
 # EXTRACTION DES INPUTS
 # =========================
 
@@ -169,6 +197,12 @@ if df_inputs_clean.empty:
     st.warning("Pas assez de données pour afficher les distributions.")
     st.stop()
 
+baseline_df = pd.read_csv("data/raw/application_test.csv")
+
+baseline_df = baseline_df[
+    ["AMT_INCOME_TOTAL", "AMT_CREDIT", "DAYS_BIRTH"]
+].dropna()
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -202,3 +236,37 @@ with col3:
     ax.set_ylabel("Fréquence")
 
     st.pyplot(fig)
+
+# =========================
+# PSI - DATA DRIFT
+# =========================
+
+st.subheader("Analyse PSI (Population Stability Index)")
+
+psi_income = calculate_psi(
+    baseline_df["AMT_INCOME_TOTAL"],
+    df_inputs_clean["AMT_INCOME_TOTAL"]
+)
+
+psi_credit = calculate_psi(
+    baseline_df["AMT_CREDIT"],
+    df_inputs_clean["AMT_CREDIT"]
+)
+
+psi_age = calculate_psi(
+    baseline_df["DAYS_BIRTH"],
+    df_inputs_clean["DAYS_BIRTH"]
+)
+
+psi_col1, psi_col2, psi_col3 = st.columns(3)
+
+psi_col1.metric("PSI Revenu", f"{psi_income:.4f}")
+psi_col2.metric("PSI Crédit", f"{psi_credit:.4f}")
+psi_col3.metric("PSI Âge", f"{psi_age:.4f}")
+
+st.info("""
+Interprétation PSI :
+- < 0.1 : pas de drift significatif
+- 0.1 à 0.2 : drift modéré
+- > 0.2 : drift important
+""")
