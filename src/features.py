@@ -72,14 +72,32 @@ def aggregate_credit_card(cc: pd.DataFrame) -> pd.DataFrame:
     ).reset_index()
 
 
-def build_features(app, bureau, bb, prev, inst, pos, cc, high_missing_cols=None, target_col="TARGET"):
+def build_features(
+    app,
+    bureau=None,
+    bb=None,
+    prev=None,
+    inst=None,
+    pos=None,
+    cc=None,
+    high_missing_cols=None,
+    target_col="TARGET",
+    precomputed_aggs=None
+):
     df = app.copy()
 
-    prev_agg = aggregate_previous(prev)
-    bureau_agg = aggregate_bureau(bureau, bb)
-    inst_agg = aggregate_installments(inst)
-    pos_agg = aggregate_pos(pos)
-    cc_agg = aggregate_credit_card(cc)
+    if precomputed_aggs is not None:
+        prev_agg = precomputed_aggs["prev_agg"]
+        bureau_agg = precomputed_aggs["bureau_agg"]
+        inst_agg = precomputed_aggs["inst_agg"]
+        pos_agg = precomputed_aggs["pos_agg"]
+        cc_agg = precomputed_aggs["cc_agg"]
+    else:
+        prev_agg = aggregate_previous(prev)
+        bureau_agg = aggregate_bureau(bureau, bb)
+        inst_agg = aggregate_installments(inst)
+        pos_agg = aggregate_pos(pos)
+        cc_agg = aggregate_credit_card(cc)
 
     df = df.merge(prev_agg, on="SK_ID_CURR", how="left")
     df = df.merge(bureau_agg, on="SK_ID_CURR", how="left")

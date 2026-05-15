@@ -42,31 +42,33 @@ Le principal bottleneck identifié n'est pas le modèle de machine learning lui-
 
 ### Solution mise en place
 
-Une étape de pré-calcul des features a été ajoutée avec le script :
+Une étape de pré-calcul des agrégations a été ajoutée avec le script :
 
 `src/precompute_features.py`
 
-Les features sont désormais calculées une seule fois puis sauvegardées dans un fichier parquet :
+Les agrégations les plus coûteuses sont désormais calculées une seule fois puis sauvegardées dans un fichier :
 
-`data/processed/features_cache.parquet`
+`data/processed/precomputed_aggs.joblib`
 
 Le fichier `predict.py` a été modifié afin de :
-- charger directement les features pré-calculées ;
-- éviter les appels répétés à `build_features()` pendant l'inférence.
+- charger les agrégations pré-calculées ;
+- réutiliser ces agrégations pendant l'inférence ;
+- conserver le recalcul des features utilisateur dans `build_features()`.
 
-Cette approche permet de séparer :
-- le preprocessing offline ;
-- l'inférence online.
+Cette approche permet de :
+- réduire fortement le coût du preprocessing ;
+- conserver la cohérence métier des prédictions ;
+- séparer le preprocessing offline de l'inférence online.
 
 ---
 
 ## Résultats après optimisation
 
-| Métrique | Baseline | Optimized v1 |
+| Métrique | Baseline | Optimized |
 |---|---|---|
-| Mean latency | 3.01 sec | 0.006 sec |
-| Throughput | 0.33 req/sec | 159 req/sec |
-| Memory usage | 2106 MB | 357 MB |
+| Mean latency | 3.01 sec | 0.108 sec |
+| Throughput | 0.33 req/sec | 9.28 req/sec |
+| Memory usage | 2106 MB | 585 MB |
 | Error rate | 0 % | 0 % |
 
 ---
@@ -78,18 +80,18 @@ Le modèle final conserve une architecture Scikit-learn chargée avec Joblib afi
 - une intégration stable dans l'API Gradio ;
 - une maintenance légère.
 
-Les features sont pré-calculées puis stockées au format parquet avec PyArrow afin de réduire le coût du preprocessing pendant l'inférence.
+Les agrégations les plus coûteuses sont pré-calculées puis stockées dans un fichier Joblib afin de réduire le coût du preprocessing pendant l'inférence.
 
 Le profiling avec cProfile a montré que le principal bottleneck provenait des agrégations pandas réalisées dans `build_features()` et non de l'inférence du modèle lui-même.
 
-L'utilisation d'ONNX Runtime a été envisagée mais n'a pas été retenue dans la configuration finale, car l'optimisation du preprocessing apportait un gain beaucoup plus significatif dans notre cas d'usage.
+L'utilisation d'ONNX Runtime a été envisagée mais n'a pas été retenue dans la configuration finale, car l'optimisation du preprocessing apportait déjà un gain significatif dans notre cas d'usage.
 
-Le projet est exécuté sur CPU, ce qui reste suffisant pour ce modèle tabulaire après optimisation des features.
+Le projet est exécuté sur CPU, ce qui reste suffisant pour ce modèle tabulaire après optimisation.
 
 ---
 
 ## Conclusion
 
-L'utilisation d'un cache de features pré-calculées a permis de réduire fortement la latence d'inférence et d'améliorer significativement le throughput du système.
+Le pré-calcul des agrégations a permis de réduire fortement la latence d'inférence et d'améliorer significativement le throughput du système.
 
-Cette optimisation rend le modèle beaucoup plus adapté à un usage temps réel tout en conservant les mêmes features et le même pipeline de machine learning.
+Cette optimisation rend le modèle beaucoup plus adapté à un usage temps réel tout en conservant la cohérence métier du pipeline de prédiction.

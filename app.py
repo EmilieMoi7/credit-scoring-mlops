@@ -55,8 +55,8 @@ def predict_interface(
 
     try:
         # Validations métier
-        if age <= 0 or age > 100:
-            raise ValueError("L'âge doit être compris entre 1 et 100 ans.")
+        if age < 18 or age > 100:
+            raise ValueError("L'âge doit être compris entre 18 et 100 ans.")
 
         if amt_income_total <= 0:
             raise ValueError("Le revenu total doit être positif.")
