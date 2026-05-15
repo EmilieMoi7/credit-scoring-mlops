@@ -76,7 +76,7 @@ def main():
     total_time = time.time() - total_start
 
     metrics = {
-        "version": "baseline",
+        "version": "optimized",
         "n_requests": N_REQUESTS,
         "mean_latency_sec": float(np.mean(latencies)),
         "min_latency_sec": float(np.min(latencies)),

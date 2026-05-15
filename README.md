@@ -109,7 +109,7 @@ Le coverage des tests peut être exécuté avec :
 PYTHONPATH=. pytest --cov=src
 ```
 
-Les tests couvrent principalement le pipeline d'inférence et les cas critiques de prédiction dans `predict.py`.
+Les tests couvrent principalement le pipeline d'inférence et les cas critiques de prédiction dans `predict.py`(Taux de couverture de 88%).
 
 ## Benchmarks de performance
 
@@ -151,7 +151,7 @@ Les données sont stockées dans des logs JSON et visualisées avec un dashboard
 Lancer le dashboard :
 
 ```bash
-streamlit run dashboard.py
+streamlit run streamlit_app.py
 ```
 
 Une phase d'analyse de performance a été réalisée avec :
@@ -159,21 +159,52 @@ Une phase d'analyse de performance a été réalisée avec :
 - profiling avec cProfile ;
 - optimisation du preprocessing.
 
-L'optimisation par cache de features pré-calculées a permis de réduire la latence moyenne :
-- de ~3 sec à ~0.006 sec ;
-- et d'augmenter fortement le throughput.
+Le profiling a montré que le principal bottleneck provenait du recalcul des agrégations réalisées dans `build_features()` à chaque requête.
 
-Le profiling a montré que le principal bottleneck provenait du recalcul des features avec `build_features()` à chaque requête.
+Une optimisation basée sur le pré-calcul des agrégations les plus coûteuses a ensuite été mise en place.
 
-Une optimisation basée sur un cache de features pré-calculées (`features_cache.parquet`) a ensuite été mise en place.
+Les agrégations sont calculées une seule fois avec le script :
+
+```bash
+python src/precompute_features.py
+```
+
+Puis sauvegardées dans :
+
+`data/processed/precomputed_aggs.joblib`
+
+Lors de l'inférence, ces agrégations sont directement rechargées afin de limiter le coût du preprocessing tout en conservant la logique métier des prédictions.
+
+Cette optimisation a permis de réduire la latence moyenne :
+- de ~3 sec à ~0.108 sec ;
+- et d'améliorer significativement le throughput du système.
+
+Une métrique PSI (Population Stability Index) a également été intégrée au dashboard de monitoring afin de détecter automatiquement les écarts de distribution entre les données de référence et les données simulées en production.
+
+Les valeurs PSI observées restent élevées en raison du faible volume de logs disponibles (~20 requêtes simulées), ce qui rend les distributions plus sensibles aux variations. Malgré cette limite, cette métrique permet de quantifier le data drift et complète l’analyse visuelle déjà présente dans le dashboard.
 
 ## Résultats de l'optimisation
 
-| Métrique | Baseline | Optimized v1 |
+| Métrique | Baseline | Optimized |
 |---|---|---|
-| Mean latency | 3.01 sec | 0.006 sec |
-| Throughput | 0.33 req/sec | 159 req/sec |
-| Memory usage | 2106 MB | 357 MB |
+| Mean latency | 3.01 sec | 0.108 sec |
+| Throughput | 0.33 req/sec | 9.28 req/sec |
+| Memory usage | 2106 MB | 585 MB |
 | Error rate | 0 % | 0 % |
 
+## Limites et perspectives
 
+Le projet repose sur un modèle tabulaire classique de credit scoring entraîné sur des données historiques simulées.
+
+Certaines limites restent présentes :
+- faible volume de logs de production pour l'analyse de drift ;
+- absence de retraining automatique ;
+- monitoring réalisé sur CPU uniquement ;
+- absence de gestion avancée des versions de données.
+
+Plusieurs améliorations pourraient être ajoutées :
+- intégration d'un système de retraining automatisé ;
+- déploiement cloud complet ;
+- monitoring temps réel avec Prometheus/Grafana ;
+- optimisation supplémentaire du pipeline d'inférence ;
+- gestion plus avancée du drift et des alertes automatiques.
