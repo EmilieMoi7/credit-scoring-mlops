@@ -2,7 +2,14 @@ import os
 import joblib
 import pandas as pd
 
-from src.features import build_features
+from src.features import (
+    build_features,
+    aggregate_previous,
+    aggregate_bureau,
+    aggregate_installments,
+    aggregate_pos,
+    aggregate_credit_card,
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -53,7 +60,20 @@ inst = pd.read_csv(os.path.join(DATA_DIR, "installments_payments.csv"))
 pos = pd.read_csv(os.path.join(DATA_DIR, "POS_CASH_balance.csv"))
 cc = pd.read_csv(os.path.join(DATA_DIR, "credit_card_balance.csv"))
 
-precomputed_aggs = joblib.load(PRECOMPUTED_AGGS_PATH)
+if os.path.exists(PRECOMPUTED_AGGS_PATH):
+    precomputed_aggs = joblib.load(PRECOMPUTED_AGGS_PATH)
+else:
+    os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
+
+    precomputed_aggs = {
+        "prev_agg": aggregate_previous(prev),
+        "bureau_agg": aggregate_bureau(bureau, bb),
+        "inst_agg": aggregate_installments(inst),
+        "pos_agg": aggregate_pos(pos),
+        "cc_agg": aggregate_credit_card(cc),
+    }
+
+    joblib.dump(precomputed_aggs, PRECOMPUTED_AGGS_PATH)
 
 
 def get_reference_client() -> pd.DataFrame:
