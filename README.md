@@ -22,31 +22,96 @@ Ce projet met en place un pipeline de credit scoring avec une approche MLOps com
 
 ```bash
 ├── data/
-│   ├── raw/                # Données récupérées depuis Hugging Face
-│   └── processed/          # Features pré-calculées
-├── notebooks/
-│   └── 01_credit_scoring_pipeline.ipynb
-├── src/
-│   ├── features.py
-│   └── predict.py
-├── tests/
-│   └── test_predict.py
+│   ├── raw/                         # Données récupérées depuis Hugging Face
+│   └── processed/
+│       └── precomputed_aggs.joblib
+├── logs/
+│   └── production_logs.jsonl        # Logs JSONL de production
+├── mlruns/                          # Suivi des expérimentations MLflow
 ├── models/
 │   └── credit_scoring_pipeline.joblib
-├── app.py                  # Interface Gradio
-├── dashboard.py            # Dashboard Streamlit de monitoring
-├── requirements.txt
-├── Dockerfile
-├── .github/workflows/
-│   └── ci-cd.yml
-├── benchmarks/
-│   ├── benchmark_baseline.py
-│   └── benchmark_optimized.py
+├── notebooks/
+│   ├── 01_credit_scoring_pipeline.ipynb
+│   └── 02_monitoring_drift_analysis.ipynb
 ├── reports/
 │   ├── baseline_metrics.json
 │   ├── optimized_metrics_v1.json
-│   └── optimisation_report.md
+│   ├── optimization_report.md
+│   ├── profile_baseline.prof
+│   └── profile_baseline.txt
+├── src/
+│   ├── __init__.py
+│   ├── features.py
+│   ├── precompute_features.py
+│   └── predict.py
+├── tests/
+│   └── test_predict.py
+├── app.py                           # Interface Gradio
+├── streamlit_app.py                 # Dashboard Streamlit
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── .gitignore
+├── .dockerignore
 └── README.md
+```
+
+---
+## Architecture du projet 
+```mermaid
+flowchart TD
+    U[Utilisateur] --> G[Interface API Gradio]
+
+    G --> V[Validation metier des inputs]
+    V --> P[Preparation des donnees utilisateur]
+    P --> PR[src/predict.py]
+
+    PR --> M[Modele Scikit-learn charge avec Joblib]
+    PR --> F[src/features.py - Feature engineering]
+
+    F --> A[Pre-calcul des agregations precomputed_aggs.joblib]
+    A --> F
+
+    M --> D[Decision credit accorde ou refuse]
+
+    PR --> L[Logs JSONL inputs outputs latence CPU memoire erreurs]
+
+    L --> S[Dashboard Streamlit monitoring operationnel]
+    L --> N[Notebook analyse data drift]
+
+    S --> PSI[PSI Population Stability Index]
+    N --> DRIFT[Analyse du data drift]
+
+    subgraph Docker[Docker et Docker Compose]
+        G
+        V
+        P
+        PR
+        F
+        A
+        M
+        L
+        S
+    end
+
+    subgraph CICD[Pipeline GitHub Actions]
+        T[Tests Pytest et Coverage]
+        B[Build Docker]
+        DEP[Deploiement Hugging Face Space]
+    end
+
+    T --> B --> DEP
+    DEP --> G
+
+    classDef user fill:#E3F2FD,stroke:#1976D2,color:#000;
+    classDef app fill:#E8F5E9,stroke:#2E7D32,color:#000;
+    classDef monitoring fill:#FFF3E0,stroke:#EF6C00,color:#000;
+    classDef cicd fill:#F3E5F5,stroke:#7B1FA2,color:#000;
+
+    class U user;
+    class G,V,P,PR,F,A,M,D app;
+    class L,S,N,PSI,DRIFT monitoring;
+    class T,B,DEP cicd;
 ```
 
 ## Données
